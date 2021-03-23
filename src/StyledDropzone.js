@@ -42,7 +42,7 @@ const downloadCSVFromJson = (filename, arrayOfJson) => {
   // Create link and download
   var link = document.createElement('a');
   link.setAttribute('href', 'data:text/csv;charset=utf-8,%EF%BB%BF' + encodeURIComponent(csv));
-  link.setAttribute('download', filename);
+  link.setAttribute('download', filename + '.csv');
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
   link.click();
