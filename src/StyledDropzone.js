@@ -57,12 +57,12 @@ export const StyledDropzone = (props) => {
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
       reader.onload = () => {
-        // Do whatever you want with the file contents
+
+        //reader.result is the input JSON file from OpenPose
         const binaryStr = reader.result
-        //console.log(binaryStr)
-        console.log(props.label)
-        console.log(props.keypoint)
-        console.log(props.mapName)
+
+        //output json returns keypoints in sets of 3 (0x, 0y, 0c, 1x, 1y, 1c, ...)
+        //multiply the selected keypoint by 3 to extract the correct data
         const keypointSelector = props.keypoint * 3;
         const keypointX = keypointSelector;
         const keypointY = keypointSelector + 1;
@@ -71,23 +71,12 @@ export const StyledDropzone = (props) => {
         const keypointMap = JSON.parse(binaryStr).map(x => {
           return {
             frame: x.image_id,
-            // person_id: x.category_id,
-            // score: x.score,
-            // keypoints: {
               [props.mapName + '_x']: x.keypoints[keypointX],
               [props.mapName + '_y']: x.keypoints[keypointY],
               [props.mapName + '_c']: x.keypoints[keypointC],
-            // }
           }
         })
         console.log(keypointMap);
-        // const toCSV = keypointMap.map(x => {
-        //   return { 
-        //       frame: x.frame, 
-        //       right_wrist_x: x.keypoints.right_wrist_x, 
-        //       right_wrist_y: x.keypoints.right_wrist_y, 
-        //       right_wrist_c: x.keypoints.right_wrist_c }
-        // })
         downloadCSVFromJson(props.label,keypointMap)
       }
       reader.readAsBinaryString(file)
